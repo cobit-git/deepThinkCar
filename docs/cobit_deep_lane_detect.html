@@ -1,0 +1,260 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ko" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>cobit_deep_lane_detect module &mdash; DeeptCar 1.0 문서</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="색인" href="genindex.html" />
+    <link rel="search" title="검색" href="search.html" />
+    <link rel="next" title="cobit_car_motor_l9110 module" href="cobit_car_motor_l9110.html" />
+    <link rel="prev" title="cobit_opencv_lane_detect module" href="cobit_opencv_lane_detect.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DeeptCar
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">래스 목차:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cobit_opencv_lane_detect.html">cobit_opencv_lane_detect module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">cobit_deep_lane_detect module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobit_car_motor_l9110.html">cobit_car_motor_l9110 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobit_serial_vehicle_manager.html">cobit_serial_vehicle_manager module</a></li>
+</ul>
+<p class="caption"><span class="caption-text">단계별 코드 목차:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cobit_1_lane_follower_opencv.html">cobit_1_lane_follower_opencv module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobit_1_lane_follower_rc.html">cobit_1_lane_follower_rc module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobit_2_record_lane_video.html">cobit_2_record_lane_video module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobit_3_get_train_data.html">cobit_3_get_train_data module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobit_4_lane_follower_deep_simul.html">cobit_4_lane_follower_deep_simul module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobit_5_lane_follower_deep.html">cobit_5_lane_follower_deep module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobit_label_data_compress.html">cobit_label_data_compress module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeeptCar</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>cobit_deep_lane_detect module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/cobit_deep_lane_detect.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-cobit_deep_lane_detect">
+<span id="cobit-deep-lane-detect-module"></span><h1>cobit_deep_lane_detect module<a class="headerlink" href="#module-cobit_deep_lane_detect" title="제목 주소">¶</a></h1>
+<dl class="py class">
+<dt id="cobit_deep_lane_detect.CobitDeepLaneDetect">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">cobit_deep_lane_detect.</span></code><code class="sig-name descname"><span class="pre">CobitDeepLaneDetect</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobit_deep_lane_detect.CobitDeepLaneDetect" title="정의 주소">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>딥러닝 기반 차선 검츨 클래스</p>
+<p>이 클래스는 차량의 카메라와 OpenCV의 color기반 오브젝트 디텍션을 이용해서
+차량의 앞 차선의 각도를 검출함</p>
+<dl>
+<dt>Example::</dt><dd><p>deep_detector = CobitDeepLaneDetect('home/pi/user/model')</p>
+<p>deep_detector.follow_line()</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>model_path</strong> -- 딥러닝 트레이닝 된 추론 파일(.h5)의 디렉토리 경로</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="cobit_deep_lane_detect.CobitDeepLaneDetect.follow_lane">
+<code class="sig-name descname"><span class="pre">follow_lane</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobit_deep_lane_detect.CobitDeepLaneDetect.follow_lane" title="정의 주소">¶</a></dt>
+<dd><p>입력된 이미지 파일에서 차선을 발견하고, 발견된 차선의 각도에 따라 스티어링
+휠의 회전 각도를 결정함</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>frame</strong> -- 카메라에서 전달된 차량 앞, 차선의 이미지 파일</p>
+</dd>
+<dt class="field-even">Return curr_streering_angle</dt>
+<dd class="field-even"><p>차량의 스티어링 휠의 회전 각도</p>
+</dd>
+<dt class="field-odd">Return final_frame</dt>
+<dd class="field-odd"><p>카메라에서 전달된 차량 앞 이미지</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="cobit_car_motor_l9110.html" class="btn btn-neutral float-right" title="cobit_car_motor_l9110 module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cobit_opencv_lane_detect.html" class="btn btn-neutral float-left" title="cobit_opencv_lane_detect module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, co:bit.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
