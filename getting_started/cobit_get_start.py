@@ -129,7 +129,8 @@ class App(QWidget):
         self.motor = CobitCarMotorL9110()
         self.servo = ServoKit(channels=16)
         self.servo_offset = 0
-        self.throttle = 0
+        self.cv_throttle = 0
+        self.dp_throttle = 0
         self.driveFlag = False
 
         '''
@@ -166,18 +167,6 @@ class App(QWidget):
         self.servo_trim_sld.setRange(-20, 20)
         self.servo_trim_sld.valueChanged[int].connect(self.sld_change_value)
 
-        # buttons - start video thread  
-        #self.video_start_btn = QPushButton(self)
-        #self.video_start_btn.setText("starting OpenCV")
-        #self.video_start_btn.clicked.connect(self.test_start_opencv)
-        #self.video_start_btn.setToolTip("Testing openCV PI camera ")
-
-        # buttons - stop video thread  
-        #self.video_stop_btn = QPushButton(self)
-        #self.video_stop_btn.setText("stop OpenCV")
-        #self.video_stop_btn.clicked.connect(self.test_stop_opencv)
-        #self.video_stop_btn.setToolTip("Testing openCV PI camera ")
-
         # radio botton
         self.radio_normal = QRadioButton("Normal camera view", self)
         self.radio_normal.setChecked(True)
@@ -202,13 +191,7 @@ class App(QWidget):
         self.radio_draw_steering.clicked.connect(self.cv_steering)
         self.radio_deep_steering = QRadioButton("Draw deep steering angle")
         self.radio_deep_steering.setChecked(False)
-        self.radio_deep_steering.clicked.connect(self.cv_deep_steering)
-
-        self.radio_recording = QRadioButton("Recording drive video")
-        self.radio_recording.setChecked(False)
-        #self.radio_recording.clicked.connect()
-        
-        #self.textLabel = QLabel('Deetcar Camera View')
+        self.radio_deep_steering.clicked.connect(self.cv_deep_steering)       
         # create the label that holds the image
         self.disply_width = 320
         self.display_height = 240
@@ -240,19 +223,39 @@ class App(QWidget):
         self.dp_lane_drive_stop_btn.clicked.connect(self.deep_lane_drive_stop)
         self.dp_lane_drive_stop_btn.setToolTip("Deep learning lane detecting driving stop")
 
-        # throttle control
-        self.sld_throttle = QSlider(Qt.Horizontal, self)
-        self.sld_throttle.setRange(0, 50)
-        self.sld_throttle.valueChanged[int].connect(self.sld_throttle_value)
+        # cv throttle control
+        self.sld_cv_throttle = QSlider(Qt.Horizontal, self)
+        self.sld_cv_throttle.setRange(0, 50)
+        self.sld_cv_throttle.valueChanged[int].connect(self.sld_cv_throttle_value)
+
+        # deep throttle label
+        self.cv_throttle_label = QLabel('0', self)
+        self.cv_throttle_label.setAlignment(Qt.AlignCenter )
+        self.cv_throttle_label.setMinimumWidth(100)
+        self.cv_throttle_label.setText("0")
+
+        # dp throttle control
+        self.sld_dp_throttle = QSlider(Qt.Horizontal, self)
+        self.sld_dp_throttle.setRange(0, 50)
+        self.sld_dp_throttle.valueChanged[int].connect(self.sld_dp_throttle_value)
+
+        # deep throttle label
+        self.deep_throttle_label = QLabel('0', self)
+        self.deep_throttle_label.setAlignment(Qt.AlignCenter )
+        self.deep_throttle_label.setMinimumWidth(100)
+        self.deep_throttle_label.setText("0")
 
         # create a vertical box layout and add the two labels
         vbox = QVBoxLayout()
         hbox = QHBoxLayout()
         h_cv_box = QHBoxLayout()
         v_cv_radio_box = QVBoxLayout() 
-        v_motor_box = QVBoxLayout()
-        v_throttle_box = QVBoxLayout()
-        h_motor_throttle_box = QHBoxLayout()
+        v_cv_motor_box = QVBoxLayout()
+        v_cv_throttle_box = QVBoxLayout()
+        h_cv_motor_throttle_box = QHBoxLayout()
+        v_dp_motor_box = QVBoxLayout()
+        v_dp_throttle_box = QVBoxLayout()
+        h_dp_motor_throttle_box = QHBoxLayout()
         vbox.addWidget(self.motor_test_btn)
         vbox.addWidget(self.servo_center_btn)
         hbox.addWidget(self.servo_trim_label)
@@ -260,8 +263,6 @@ class App(QWidget):
         vbox.addLayout(hbox)
         vbox.addWidget(self.servo_trim_sld)
         vbox.addWidget(self.servo_test_btn)
-        #vbox.addWidget(self.video_start_btn)
-        #vbox.addWidget(self.video_stop_btn)
         v_cv_radio_box.addWidget(self.radio_normal)
         v_cv_radio_box.addWidget(self.radio_mask)
         v_cv_radio_box.addWidget(self.radio_edge)
@@ -272,16 +273,21 @@ class App(QWidget):
         v_cv_radio_box.addWidget(self.radio_deep_steering)     
         h_cv_box.addLayout(v_cv_radio_box)
         h_cv_box.addWidget(self.image_label)
-        vbox.addLayout(h_cv_box)   
-        #vbox.addWidget(self.image_label)
-        #vbox.addWidget(self.textLabel)
-        v_motor_box.addWidget(self.cv_lane_drive_start_btn)
-        v_motor_box.addWidget(self.cv_lane_drive_stop_btn)
-        v_throttle_box.addWidget(self.sld_throttle)
-        v_throttle_box.addWidget(self.radio_recording)
-        h_motor_throttle_box.addLayout(v_motor_box)
-        h_motor_throttle_box.addLayout(v_throttle_box)
-        vbox.addLayout(h_motor_throttle_box)
+        vbox.addLayout(h_cv_box)  
+        v_cv_motor_box.addWidget(self.cv_lane_drive_start_btn)
+        v_cv_motor_box.addWidget(self.cv_lane_drive_stop_btn)
+        v_cv_throttle_box.addWidget(self.sld_cv_throttle)
+        v_cv_throttle_box.addWidget(self.cv_throttle_label)
+        h_cv_motor_throttle_box.addLayout(v_cv_motor_box)
+        h_cv_motor_throttle_box.addLayout(v_cv_throttle_box)
+        v_dp_motor_box.addWidget(self.dp_lane_drive_start_btn)
+        v_dp_motor_box.addWidget(self.dp_lane_drive_stop_btn)
+        v_dp_throttle_box.addWidget(self.sld_dp_throttle)
+        v_dp_throttle_box.addWidget(self.deep_throttle_label)
+        h_dp_motor_throttle_box.addLayout(v_dp_motor_box)
+        h_dp_motor_throttle_box.addLayout(v_dp_throttle_box)
+        vbox.addLayout(h_cv_motor_throttle_box)
+        vbox.addLayout(h_dp_motor_throttle_box)
         vbox.addWidget(self.dp_lane_drive_start_btn)
         vbox.addWidget(self.dp_lane_drive_stop_btn)
         
@@ -332,16 +338,23 @@ class App(QWidget):
         self.servo_offset = value
         self.servo.servo[0].angle = 90+value
 
-    def sld_throttle_value(self, value):
-        self.throttle = value
+    def sld_cv_throttle_value(self, value):
+        self.cv_throttle = value
+        self.cv_throttle_label.setText(str(value))
         if self.driveFlag is True:
-            print(self.sld_throttle         )
-            self.motor.motor_move_forward(self.throttle)
+            self.motor.motor_move_forward(self.cv_throttle)
+        else:
+            self.motor.motor_move_forward(0)
+
+    def sld_dp_throttle_value(self, value):
+        self.dp_throttle = value
+        self.deep_throttle_label.setText(str(value))
+        if self.driveFlag is True:
+            self.motor.motor_move_forward(self.dp_throttle)
         else:
             self.motor.motor_move_forward(0)
 
     def servo_(self, angle):
-        print("test")
         self.servo.servo[0].angle = angle+self.servo_offset
 
     def test_DC_motor(self):
@@ -375,9 +388,9 @@ class App(QWidget):
 
     def opencv_lane_drive_start(self):
         self.driveFlag = True
-        self.cv_mode = 7
-        self.motor.motor_move_forward(self.throttle)
-        self.radio_deep_steering.setChecked(True)
+        self.cv_mode = 6
+        self.motor.motor_move_forward(self.cv_throttle)
+        self.radio_draw_steering.setChecked(True)
         print("CV drive start")
     
     def opencv_lane_drive_stop(self):
@@ -386,14 +399,14 @@ class App(QWidget):
         self.radio_draw_steering.setChecked(False)
         self.radio_normal.setChecked(True)
         self.cv_mode = 0
-        print("CV drive start")
+        print("CV drive stop")
 
     def deep_lane_drive_start(self):
         self.driveFlag = True
         self.cv_mode = 7
-        self.motor.motor_move_forward(self.throttle)
+        self.motor.motor_move_forward(self.dp_throttle)
         self.radio_deep_steering.setChecked(True)
-        print("CV drive start")
+        print("deep drive start")
     
     def deep_lane_drive_stop(self):
         self.driveFlag = False
@@ -401,7 +414,7 @@ class App(QWidget):
         self.motor.motor_move_forward(0)
         self.radio_deep_steering.setChecked(False)
         self.radio_normal.setChecked(True)
-        print("CV drive start")     
+        print("deep drive start")     
     
 
     #def test_start_opencv(self):
