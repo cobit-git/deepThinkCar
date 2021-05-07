@@ -10,8 +10,14 @@ height =  int(cap.get(4))
 print(width)
 print(height)
 
+SCREEN_WIDTH = 320
+SCREEN_HEIGHT = 240
+
+cap.set(3, SCREEN_WIDTH)
+cap.set(4, SCREEN_HEIGHT)
+
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('output.avi',fourcc, 20.0, (width, height))
+out = cv2.VideoWriter('output.avi',fourcc, 20.0, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 while True:
     ret, frame = cap.read()

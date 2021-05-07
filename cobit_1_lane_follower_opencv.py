@@ -20,17 +20,16 @@ def main_loop():
 	SCREEN_HEIGHT = 240
 
 	cap = cv2.VideoCapture(0)
-	cap.set(3, int(SCREEN_WIDTH))
-	cap.set(4, int(SCREEN_HEIGHT))
+	cap.set(3, SCREEN_WIDTH)
+	cap.set(4, SCREEN_HEIGHT)
 
-	servo_offset = 15
+	servo_offset = 0
 	servo.servo[0].angle = 90 + servo_offset
 
 	time.sleep(2)
 
 	for i in range(30):
-		ret, img_flip = cap.read()
-		img_org = cv2.flip(img_flip, 1)
+		ret, img_org = cap.read()
 		if ret:
 			lanes, img_lane = cv_detector.get_lane(img_org)
 			angle, img_angle = cv_detector.get_steering_angle(img_lane, lanes)
@@ -48,11 +47,9 @@ def main_loop():
 
 
 
-	motor.motor_move_forward(0)
+	motor.motor_move_forward(30)
 
 	while True:
-		#ret, img_flip = cap.read()
-		#img_org = cv2.flip(img_flip, 1)
 		ret, img_org = cap.read()
 		if ret:
 			lanes, img_lane = cv_detector.get_lane(img_org)

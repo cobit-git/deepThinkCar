@@ -7,8 +7,11 @@ import time
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread
 import numpy as np
 from cobit_car_motor_l9110 import CobitCarMotorL9110
+import cobit_deep_lane_detect
 import cobit_opencv_lane_detect
 from adafruit_servokit import ServoKit
+from cobit_deep_lane_detect import CobitDeepLaneDetect
+
 
 
 class VideoThread(QThread):
@@ -84,15 +87,28 @@ class VideoThread(QThread):
                     self.curr_steering_angle = cobit_opencv_lane_detect._stabilize_steering_angle(self.curr_steering_angle, new_steering_angle, len(lane_lines))
                     curr_heading_img = cobit_opencv_lane_detect._display_heading_line(lane_lines_image, self.curr_steering_angle)
                     self.change_pixmap_signal.emit(curr_heading_img)
+                    print(self.curr_steering_angle)
+                    if self.curr_steering_angle < 160 and self.curr_steering_angle > 20:
+                        a.servo_(self.curr_steering_angle)
+                    else:
+                        pass
+
+                elif a.get_cv_mode() == 7: # deep driving 
+                    angle_deep, img_angle = deep_detector.follow_lane(cv_img)
+                    self.change_pixmap_signal.emit(img_angle)
+                    if img_angle is None:
+                        print("angle image out!!")
+                        pass
+                    else:
+                        print(angle_deep)
+                        if angle_deep < 160 and angle_deep > 20:
+                            a.servo_(angle_deep)
+                        else:
+                            pass
 
                 else:
                     self.change_pixmap_signal.emit(cv_img)
-                    #lane, line_img = cobit_opencv_lane_detect._detect_lane(cv_img)
-                    #new_steering_angle = cobit_opencv_lane_detect._compute_steering_angle(line_img, lane)
-                    #self.curr_steering_angle = cobit_opencv_lane_detect._stabilize_steering_angle(self.curr_steering_angle, new_steering_angle, len(lane))
-                    #curr_heading_img = cobit_opencv_lane_detect._display_heading_line(line_img, self.curr_steering_angle)
-                    #self.change_pixmap_signal.emit(curr_heading_img)
-        
+                   
         # shut down capture system
         self.cap.release()
 
@@ -112,11 +128,14 @@ class App(QWidget):
         self.cv_mode = 0
         self.motor = CobitCarMotorL9110()
         self.servo = ServoKit(channels=16)
+        self.servo_offset = 0
+        self.throttle = 0
+        self.driveFlag = False
 
         '''
             Window layout 
         '''
-        self.setGeometry(100,100, 800, 800)
+        #elf.setGeometry(100,100, 800, 800)
         self.setWindowTitle("Deeptcar Operation Demo")
        
 
@@ -139,9 +158,12 @@ class App(QWidget):
         self.servo_test_btn.setToolTip("Testing servo motor on-off 3 times")
 
         # servo trim control
+        self.servo_trim_label = QLabel('0', self)
+        self.servo_trim_label.setAlignment(Qt.AlignCenter )
+        self.servo_trim_label.setMinimumWidth(100)
+        self.servo_trim_label.setText("0")
         self.servo_trim_sld = QSlider(Qt.Horizontal, self)
-        #self.servo_trim_sld.setFocusPolicy(Qt.NoFocus)
-        self.servo_trim_sld.setGeometry(30, 40, 200, 30)
+        self.servo_trim_sld.setRange(-20, 20)
         self.servo_trim_sld.valueChanged[int].connect(self.sld_change_value)
 
         # buttons - start video thread  
@@ -178,8 +200,15 @@ class App(QWidget):
         self.radio_draw_steering = QRadioButton("Draw steering angle")
         self.radio_draw_steering.setChecked(False)
         self.radio_draw_steering.clicked.connect(self.cv_steering)
+        self.radio_deep_steering = QRadioButton("Draw deep steering angle")
+        self.radio_deep_steering.setChecked(False)
+        self.radio_deep_steering.clicked.connect(self.cv_deep_steering)
+
+        self.radio_recording = QRadioButton("Recording drive video")
+        self.radio_recording.setChecked(False)
+        #self.radio_recording.clicked.connect()
         
-        self.textLabel = QLabel('Deetcar Camera View')
+        #self.textLabel = QLabel('Deetcar Camera View')
         # create the label that holds the image
         self.disply_width = 320
         self.display_height = 240
@@ -187,23 +216,75 @@ class App(QWidget):
         self.image_label.move(0, 0)
         self.image_label.resize(self.disply_width, self.display_height)
 
+        # buttons - OpenCV lane driving 
+        self.cv_lane_drive_start_btn = QPushButton(self)
+        self.cv_lane_drive_start_btn.setText("OpenCV lane detect driving start")
+        self.cv_lane_drive_start_btn.clicked.connect(self.opencv_lane_drive_start)
+        self.cv_lane_drive_start_btn.setToolTip("OpenCV lane detecting driving start")
+
+        # buttons - OpenCV lane driving 
+        self.cv_lane_drive_stop_btn = QPushButton(self)
+        self.cv_lane_drive_stop_btn.setText("OpenCV lane detect driving stop")
+        self.cv_lane_drive_stop_btn.clicked.connect(self.opencv_lane_drive_stop)
+        self.cv_lane_drive_stop_btn.setToolTip("OpenCV lane detecting driving stop")
+
+        # buttons - Deep lane driving 
+        self.dp_lane_drive_start_btn = QPushButton(self)
+        self.dp_lane_drive_start_btn.setText("Deep learning lane detect driving start")
+        self.dp_lane_drive_start_btn.clicked.connect(self.deep_lane_drive_start)
+        self.dp_lane_drive_start_btn.setToolTip("Deep leanring lane detecting driving start")
+
+        # buttons - Deep lane driving 
+        self.dp_lane_drive_stop_btn = QPushButton(self)
+        self.dp_lane_drive_stop_btn.setText("Deep learning lane detect driving stop")
+        self.dp_lane_drive_stop_btn.clicked.connect(self.deep_lane_drive_stop)
+        self.dp_lane_drive_stop_btn.setToolTip("Deep learning lane detecting driving stop")
+
+        # throttle control
+        self.sld_throttle = QSlider(Qt.Horizontal, self)
+        self.sld_throttle.setRange(0, 50)
+        self.sld_throttle.valueChanged[int].connect(self.sld_throttle_value)
+
         # create a vertical box layout and add the two labels
         vbox = QVBoxLayout()
+        hbox = QHBoxLayout()
+        h_cv_box = QHBoxLayout()
+        v_cv_radio_box = QVBoxLayout() 
+        v_motor_box = QVBoxLayout()
+        v_throttle_box = QVBoxLayout()
+        h_motor_throttle_box = QHBoxLayout()
         vbox.addWidget(self.motor_test_btn)
         vbox.addWidget(self.servo_center_btn)
+        hbox.addWidget(self.servo_trim_label)
+        hbox.addWidget(self.servo_trim_sld)
+        vbox.addLayout(hbox)
         vbox.addWidget(self.servo_trim_sld)
         vbox.addWidget(self.servo_test_btn)
         #vbox.addWidget(self.video_start_btn)
         #vbox.addWidget(self.video_stop_btn)
-        vbox.addWidget(self.radio_normal)
-        vbox.addWidget(self.radio_mask)
-        vbox.addWidget(self.radio_edge)
-        vbox.addWidget(self.radio_crop)
-        vbox.addWidget(self.radio_detect_line)
-        vbox.addWidget(self.radio_slope_lane)
-        vbox.addWidget(self.radio_draw_steering)        
-        vbox.addWidget(self.image_label)
-        vbox.addWidget(self.textLabel)
+        v_cv_radio_box.addWidget(self.radio_normal)
+        v_cv_radio_box.addWidget(self.radio_mask)
+        v_cv_radio_box.addWidget(self.radio_edge)
+        v_cv_radio_box.addWidget(self.radio_crop)
+        v_cv_radio_box.addWidget(self.radio_detect_line)
+        v_cv_radio_box.addWidget(self.radio_slope_lane)
+        v_cv_radio_box.addWidget(self.radio_draw_steering)   
+        v_cv_radio_box.addWidget(self.radio_deep_steering)     
+        h_cv_box.addLayout(v_cv_radio_box)
+        h_cv_box.addWidget(self.image_label)
+        vbox.addLayout(h_cv_box)   
+        #vbox.addWidget(self.image_label)
+        #vbox.addWidget(self.textLabel)
+        v_motor_box.addWidget(self.cv_lane_drive_start_btn)
+        v_motor_box.addWidget(self.cv_lane_drive_stop_btn)
+        v_throttle_box.addWidget(self.sld_throttle)
+        v_throttle_box.addWidget(self.radio_recording)
+        h_motor_throttle_box.addLayout(v_motor_box)
+        h_motor_throttle_box.addLayout(v_throttle_box)
+        vbox.addLayout(h_motor_throttle_box)
+        vbox.addWidget(self.dp_lane_drive_start_btn)
+        vbox.addWidget(self.dp_lane_drive_stop_btn)
+        
         
         # set the vbox layout as the widgets layout
         self.setLayout(vbox)
@@ -239,12 +320,29 @@ class App(QWidget):
     def cv_steering(self):
         self.cv_mode = 6  
 
+    def cv_deep_steering(self):
+        self.cv_mode = 7  
+
     def closeEvent(self, event):
         self.thread.stop()
         event.accept()
 
     def sld_change_value(self, value):
-        print(value)
+        self.servo_trim_label.setText(str(value))
+        self.servo_offset = value
+        self.servo.servo[0].angle = 90+value
+
+    def sld_throttle_value(self, value):
+        self.throttle = value
+        if self.driveFlag is True:
+            print(self.sld_throttle         )
+            self.motor.motor_move_forward(self.throttle)
+        else:
+            self.motor.motor_move_forward(0)
+
+    def servo_(self, angle):
+        print("test")
+        self.servo.servo[0].angle = angle+self.servo_offset
 
     def test_DC_motor(self):
         print("test DC motor")
@@ -258,24 +356,53 @@ class App(QWidget):
 
     def servo_to_center(self):
         print("move servo to center")
-        servo_offset = 0
-        self.servo.servo[0].angle = 90 + servo_offset
+        self.servo.servo[0].angle = 90
 
     def test_servo_motor(self):
         print("test servo motor")
-        servo_offset = 0
         for i in range(3):
             print("%d time test",i)
-            self.servo.servo[0].angle = 90 + servo_offset
+            self.servo.servo[0].angle = 90
             time.sleep(1)
-            self.servo.servo[0].angle = 30 + servo_offset
+            self.servo.servo[0].angle = 30
             time.sleep(1)
-            self.servo.servo[0].angle = 90 + servo_offset
+            self.servo.servo[0].angle = 90
             time.sleep(1)
-            self.servo.servo[0].angle = 150 + servo_offset
+            self.servo.servo[0].angle = 150
             time.sleep(1)
-            self.servo.servo[0].angle = 90 + servo_offset
+            self.servo.servo[0].angle = 90
         print("test is completed")
+
+    def opencv_lane_drive_start(self):
+        self.driveFlag = True
+        self.cv_mode = 7
+        self.motor.motor_move_forward(self.throttle)
+        self.radio_deep_steering.setChecked(True)
+        print("CV drive start")
+    
+    def opencv_lane_drive_stop(self):
+        self.driveFlag = False
+        self.motor.motor_move_forward(0) 
+        self.radio_draw_steering.setChecked(False)
+        self.radio_normal.setChecked(True)
+        self.cv_mode = 0
+        print("CV drive start")
+
+    def deep_lane_drive_start(self):
+        self.driveFlag = True
+        self.cv_mode = 7
+        self.motor.motor_move_forward(self.throttle)
+        self.radio_deep_steering.setChecked(True)
+        print("CV drive start")
+    
+    def deep_lane_drive_stop(self):
+        self.driveFlag = False
+        self.cv_mode = 0
+        self.motor.motor_move_forward(0)
+        self.radio_deep_steering.setChecked(False)
+        self.radio_normal.setChecked(True)
+        print("CV drive start")     
+    
 
     #def test_start_opencv(self):
     #    print("starting openCV and pi camera")
@@ -304,6 +431,7 @@ class App(QWidget):
     
 if __name__=="__main__":
     app = QApplication(sys.argv)
+    deep_detector = CobitDeepLaneDetect("/home/pi/deeptcar/models/lane_navigation_final.h5")
     a = App()
     a.show()
     sys.exit(app.exec_())
