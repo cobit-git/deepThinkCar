@@ -2,7 +2,12 @@
 # DeeptCar: 10만원으로 배울 수 있는 딥러닝 자율주행자동차 키트  
 
 ### DeeptCar 알아보기 
-DeeptCar는 라즈베리파이 기반의 자율주행자동차 키트 입니다. OpenCV와 딥러닝을 사용하여 차선인식 자율주행을 할 수 있습니다. 추가적인 하드웨어장치를 이용하면 보행자나 교통신호를 식별하는 자율주행을 구현할 수 있습니다.    
+DeeptCar는 라즈베리파이 기반의 자율주행자동차 키트 입니다. OpenCV와 딥러닝을 사용하여 차선인식 자율주행을 할 수 있습니다. 추가적인 하드웨어장치를 이용하면 보행자나 교통신호를 식별하는 자율주행을 구현할 수 있습니다.  
+### ADAS
+DeeptCar는 이미 많이 상용화 된 ADAS(Advanced Driver Asistance System)의 일부 기능을 구현해 볼 수 있습니다. ADAS의 여러가지 기능 중 차선인식 기능이 있는데, DeeptCar는 OpenCV를 이용한 차선인식이 가능합니다. 상세한 사항은 여기를 참고해 주십시오. 
+### 딥러닝 차선인식 주행(Behavior Cloning)
+
+### DeeptCar 하드웨어 
 
 ### 사용하기 전에 준비하기
 Deeptcar는 라즈베리파이를 기반으로 동작을 합니다. 따라서 먼저 라즈베리파이 OS 이미지를 만들어야 합니다. 라즈베리파이 OS이미지를 만드는 방법은 [여기](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit)를 참고해 주시기 바랍니다.  DeeptCar는 라즈베리파이 3B, 3B+, 3에서 테스트 되었습니다. 라즈베리파이 이미지를 만든 다음 소프트웨어나 라이브러리를 설치해야 합니다  
