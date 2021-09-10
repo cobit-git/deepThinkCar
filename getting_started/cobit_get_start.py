@@ -444,7 +444,7 @@ class App(QWidget):
     
 if __name__=="__main__":
     app = QApplication(sys.argv)
-    deep_detector = CobitDeepLaneDetect("/home/pi/deeptcar/models/lane_navigation_final.h5")
+    deep_detector = CobitDeepLaneDetect("/home/pi/deepThinkCar/models/lane_navigation_final.h5")
     a = App()
     a.show()
     sys.exit(app.exec_())
