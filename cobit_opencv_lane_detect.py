@@ -48,6 +48,10 @@ class CobitOpencvLaneDetect(object):
 
         curr_heading_image = _display_heading_line(img_lane, self.curr_steering_angle)
         _show_image("heading", curr_heading_image)
+        if self.curr_steering_angle > 150:
+            self.curr_steering_angle = 150
+        if self.curr_sterring_angle < 30:
+            self.curr_steering_angle = 30
 
         return self.curr_steering_angle, curr_heading_image
 
@@ -221,10 +225,6 @@ def _compute_steering_angle(frame, lane_lines):
     steering_angle = angle_to_mid_deg + 90  # this is the steering angle needed by picar front wheel
 
     logging.debug('new steering angle: %s' % steering_angle)
-    if steering_angle > 150:
-        steering_angle = 150
-    if sterring_angle < 30:
-        steering_angle = 30
     return steering_angle
 
 
