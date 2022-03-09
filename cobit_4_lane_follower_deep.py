@@ -45,8 +45,7 @@ def main_loop():
 
     try:
         while cap.isOpened():
-            ret, img_flip = cap.read()
-            img_org = cv2.flip(img_flip, 0)
+            ret, img_org = cap.read()
             angle_deep, img_angle = deep_detector.follow_lane(img_org)
             if img_angle is None:
                 print("angle image out!!")
