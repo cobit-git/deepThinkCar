@@ -50,7 +50,7 @@ class CobitOpencvLaneDetect(object):
         _show_image("heading", curr_heading_image)
         if self.curr_steering_angle > 150:
             self.curr_steering_angle = 150
-        if self.curr_sterring_angle < 30:
+        if self.curr_steering_angle < 30:
             self.curr_steering_angle = 30
 
         return self.curr_steering_angle, curr_heading_image
