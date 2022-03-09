@@ -26,7 +26,7 @@ def main_loop():
     time.sleep(2)
 
     for i in range(30):
-        ret, img_orig = cap.read()
+        ret, img_org = cap.read()
         if ret:
             angle_deep, img_angle = deep_detector.follow_lane(img_org)
             if img_angle is None:
