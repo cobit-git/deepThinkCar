@@ -221,6 +221,10 @@ def _compute_steering_angle(frame, lane_lines):
     steering_angle = angle_to_mid_deg + 90  # this is the steering angle needed by picar front wheel
 
     logging.debug('new steering angle: %s' % steering_angle)
+    if steering_angle > 150:
+        steering_angle = 150
+    if sterring_angle < 30:
+        steering_angle = 30
     return steering_angle
 
 
