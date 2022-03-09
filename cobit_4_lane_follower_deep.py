@@ -26,8 +26,7 @@ def main_loop():
     time.sleep(2)
 
     for i in range(30):
-        ret, img_flip = cap.read()
-        img_org = cv2.flip(img_flip, 0)
+        ret, img_orig = cap.read()
         if ret:
             angle_deep, img_angle = deep_detector.follow_lane(img_org)
             if img_angle is None:
@@ -41,7 +40,7 @@ def main_loop():
         else:
             print("cap error")
 
-    motor.motor_move_forward(20)
+    motor.motor_move_forward(35)
 
     try:
         while cap.isOpened():
