@@ -34,7 +34,7 @@ def main_loop():
 		pass
 
 
-	video_orig = cv2.VideoWriter('./data/ car_video.avi', fourcc, 20.0, (SCREEN_WIDTH, SCREEN_HEIGHT))
+	video_orig = cv2.VideoWriter('./data/car_video.avi', fourcc, 20.0, (SCREEN_WIDTH, SCREEN_HEIGHT))
 	#video_lane = cv2.VideoWriter('./data/car_video_lane.avi', fourcc, 20.0, (SCREEN_WIDTH, SCREEN_HEIGHT))
 		
 	servo_offset = 0
