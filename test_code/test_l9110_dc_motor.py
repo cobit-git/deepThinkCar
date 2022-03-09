@@ -1,68 +1,50 @@
 import RPi.GPIO as IO
 import time
-
-
-
-pwmPin = 19
-dirPin = 13
-
+# motor 1 GPIO pin assignment  
+pwmPin1 = 19
+dirPin1 = 13
+# motor 2 GPIO pin assignment
 pwmPin2 = 12
 dirPin2 = 16
-
-
-
+# PWM setting 
 IO.setwarnings(False)
 IO.setmode(IO.BCM)
-IO.setup(pwmPin, IO.OUT)
-IO.setup(dirPin,IO.OUT)
+IO.setup(pwmPin1, IO.OUT)
+IO.setup(dirPin1, IO.OUT)
 IO.setup(pwmPin2, IO.OUT)
-IO.setup(dirPin2,IO.OUT)
+IO.setup(dirPin2, IO.OUT)
+# PWM1  (motor 1 start)
+p1 = IO.PWM(pwmPin1, 100)
+p1.start(0)
+# PWM2 (motor 2 start) 
 p2 = IO.PWM(pwmPin2, 100)
 p2.start(0)
 
-
-
-p = IO.PWM(pwmPin, 100)
-p.start(0)
-
-
-try:
-    while 1:
-        '''
-        IO.output(dirPin, True)
-        for x in range (100):
-            p.ChangeDutyCycle(x)
-            time.sleep(0.1)
-        time.sleep(0.5)
-        for x in range (100, 0, -1):
-            p.ChangeDutyCycle(x)
-            time.sleep(0.1)
-        time.sleep(0.5)
-        IO.output(dirPin, False)   
-        for x in range (100):
-            p.ChangeDutyCycle(x)
-            time.sleep(0.1)
-        time.sleep(0.5)
-        for x in range (100, 0, -1):
-            p.ChangeDutyCycle(x)
-            time.sleep(0.1)
-        '''
-        p.ChangeDutyCycle(20)
-        p2.ChangeDutyCycle(20)
-        time.sleep(2)
-        p.ChangeDutyCycle(40)
-        p2.ChangeDutyCycle(40)
-        time.sleep(2)
-        p.ChangeDutyCycle(60)
-        p2.ChangeDutyCycle(60)
-        time.sleep(2)
-        p.ChangeDutyCycle(80)
-        p2.ChangeDutyCycle(80)
-        time.sleep(2)
-        p.ChangeDutyCycle(100)
-        p2.ChangeDutyCycle(100)
-        time.sleep(2)
-except KeyboardInterrupt:
-     IO.output(dirPin, False) 
-     IO.output(pwmPin, False)
-     IO.cleanup() 
+print("DC motor test start...")
+for a in range(2):
+    print("DC motor speed 20%")
+    p1.ChangeDutyCycle(20)
+    p2.ChangeDutyCycle(20)
+    time.sleep(2)
+    print("DC motor speed 40%")
+    p1.ChangeDutyCycle(40)
+    p2.ChangeDutyCycle(40)
+    time.sleep(2)
+    print("DC motor speed 60%")
+    p1.ChangeDutyCycle(60)
+    p2.ChangeDutyCycle(60)
+    time.sleep(2)
+    print("DC motor speed 80%")
+    p1.ChangeDutyCycle(80)
+    p2.ChangeDutyCycle(80)
+    time.sleep(2)
+    print("DC motor speed 100%")
+    p2.ChangeDutyCycle(100)
+    p2.ChangeDutyCycle(100)
+    time.sleep(2)
+print("DC motor test completed")
+IO.output(dirPin1, False) 
+IO.output(pwmPin1, False)
+IO.output(dirPin2, False) 
+IO.output(pwmPin2, False)
+IO.cleanup() 
