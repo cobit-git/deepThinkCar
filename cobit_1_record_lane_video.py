@@ -54,7 +54,7 @@ def main_loop():
 		else:
 			print("cap error")
 		
-	motor.motor_move_forward(25)
+	motor.motor_move_forward(35)
 
 	while True:
 		ret, img_org = cap.read()
