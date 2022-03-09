@@ -1,5 +1,5 @@
 
-# deepThinkCar: 딥러닝 자율주행자동차 키트  
+# deepThinkCar: 멘토와 함께 만드는 딥러닝 자율주행자동차 키트  
 
 ###  알아보기 
 deepThinkCar는 라즈베리파이 기반의 자율주행자동차 키트 입니다. OpenCV와 딥러닝을 사용하여 차선인식 자율주행 배울 수 있고, 추가적인 하드웨어장치를 이용하면 보행자나 교통신호를 식별하는 오브젝트 디텍션을 학습 할 수 있습니다.  
@@ -7,10 +7,6 @@ deepThinkCar는 라즈베리파이 기반의 자율주행자동차 키트 입니
 deepThinkCar는 이미 많이 상용화 된 ADAS(Advanced Driver Asistance System)의 일부 기능을 구현해 볼 수 있습니다. ADAS의 여러가지 기능 중 차선인식 기능이 있는데, deepThinkCar는 OpenCV를 이용한 차선인식이 가능합니다. 
 #### 딥러닝 차선인식 주행(Behavior Cloning)
 deepThinkCar는 최근에 주목받고 있는 딥러닝 기술을 이용하여 차선인식 주행을 구현해 볼 수 있습니다. OpenCV로 차선인식 주행을 몇 번 실행 하면서 얻은 데이터를 트레이닝 하여 추론모델을 생성하고, 이 추론모델을 이용하여 딥러닝 차선주행을 구현합니다.
-#### 오브젝트 디텍션(object Detection)
-deepThinkCar는 차선인식주행(Behavior Cloning)과 함께 자율주행에서 중요한 주제인 오브젝트 디텍션(Object Detection)을 학습할 수 있습니다. 보행자, 신호등, 교통표지판 등 몇가지의 오브젝트를 인식 시키고 트레이닝을 통해 오브젝트 디텍션을 할 수 있습니다. 오브젝트 디텍션을 하기 위해서는 구글의 코럴 가속기가 필요합니다. 
-
-
 
 ### deepThinkCar 키트 준비하기 
 
@@ -33,9 +29,9 @@ deepThinkCar는 라즈베리파이 3B, 3B+, 4에서 테스트 되었습니다. �
 
 [라즈베리파이 소프트웨어 설치 및 셋업](https://cobit-git.github.io/deepThinkCar_doc/setup)
 
-deepThinkCar는 라즈베리파이 3B, 3B+, 4에서 테스트 되었습니다. 라즈베리파이 셋업 이후에는 deepThinkCar 조립 및 테스트를 진행합니다. 
+deepThinkCar는 라즈베리파이 3B, 3B+, 4에서 테스트 되었습니다. 라즈베리파이 셋업 이후에는 deepThinkCar 하드웨어를 조립합니다. 
 
-### deepThinkCar 조립 및 테스트 
+### deepThinkCar 조립
 라즈베리파이 부분의 셋업이 모두 완료되면, deepThinkCar를 조립하고 테스트를 실행합니다. 
 
 #### deepThinkCar조립
@@ -43,7 +39,15 @@ deepThinkCar는 조립이 되지 않은 부품 상태로 제공이 됩니다. de
 
 [deepThinkCar 조립순서](https://cobit-git.github.io/deepThinkCar_doc/assembly) 
 
-#### deepThinkCar 하드웨어 테스트 및 셋팅
+#### VNC 개발환경 셋업
+deepThinkCar를 프로그래밍해서 자율주행을 하려면 라즈베리파이 VNC 코딩 환경을 만들어야 합니다. deepThinkCar는 움직이는 자동차이기 때문에 모니터/키보드/마우스를 이용해서 프로그래밍 하는 것이 불가능 합니다. 따라서 VNC를 이용해서 프로그래밍 하는 환경을 만들어야 합니다.    
+VNC 개발환경을 구축하는 방법은 아래 링크를참고해 주십시오.    
+
+[deepThinkCar 라즈베리파이 VNC 환경 구축](https://cobit-git.github.io/deepThinkCar_doc/vnc)
+
+deepThinkCar의 라즈베리파이 VNC 개발환경은 라즈베리파이 3B, 3B+, 4에서 테스트 되었습니다. VNC 개발환경 구축에 이어서 deepThinkCar를 테스트 합니다. 
+
+#### deepThinkCar 하드웨어 테스트
 deepThinkCar 조립이 끝이나면 하드웨어를 테스트 합니다. 테스트 할 하드웨어는 다음과 같습니다. 
 1. PI 카메라 
 2. 뒷바퀴 구동용 DC모터 
@@ -81,11 +85,13 @@ OpenCV 기반 차선인식 주행을 하는 파이썬 코드에 대한 설명은
 
 [4단계 딥러닝 차선인식 주행](https://cobit-git.github.io/deepThinkCar_doc/step_4)
 
-#### 5단계: 오브젝트 디텍션
-5단계에서는 딥러닝 기반의 오브젝트 디텍션 기법을 이용하여 신호등, 보행자, 교통신호 등을 인식하는 오브젝트 디텍션을 수행합니다. 
-1~4단계에서 사용한 딥러닝 신경망이 아닌 이미 트레이닝 된 모델을 이용하여 오브젝트 디텍션을 수행합니다. 
-오브젝트 디텍션에 대한 설명은 다음 링크를 참고해 주십시오. 
-
-[5단계 오브젝트 디텍션](https://cobit-git.github.io/deepThinkCar_doc/step_5)
-
-
+### 링크
+[라즈베리파이 OS 이미지 만들기](https://cobit-git.github.io/deepThinkCar_doc/os)      
+[라즈베리파이 소프트웨어 설치 및 셋업](https://cobit-git.github.io/deepThinkCar_doc/setup)       
+[deepThinkCar 조립](https://cobit-git.github.io/deepThinkCar_doc/assembly)   
+[deepThinkCar 라즈베리파이 VNC 환경 구축](https://cobit-git.github.io/deepThinkCar_doc/vnc)     
+[deepThinkCar 하드웨어 테스트](https://cobit-git.github.io/deepThinkCar_doc/hardware)     
+[1단계 OpenCV 차선인식 주행](https://cobit-git.github.io/deepThinkCar_doc/step_1)        
+[2단계 차선인식 데이터 라벨링](https://cobit-git.github.io/deepThinkCar_doc/step_2)      
+[3단계 딥러닝 트레이닝](https://cobit-git.github.io/deepThinkCar_doc/step_3)     
+[4단계 딥러닝 차선인식 주행](https://cobit-git.github.io/deepThinkCar_doc/step_4)        
