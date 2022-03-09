@@ -46,7 +46,7 @@ class CobitDeepLaneDetect(object):
         final_frame = _display_heading_line(frame, self.curr_steering_angle)
         if self.curr_steering_angle > 150:
             self.curr_steering_angle = 150
-        if self.curr_sterring_angle < 30:
+        if self.curr_steering_angle < 30:
             self.curr_steering_angle = 30
 
         return self.curr_steering_angle, final_frame 
